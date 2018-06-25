@@ -17,3 +17,14 @@
 .award-category {
   margin-right: 10px;
 }
+
+
+.info-box-row {
+	padding-bottom: 6px;
+}
+
+@media screen and (max-width:769px){
+	.info-box-row {
+		padding-bottom: 10px;
+	}
+}

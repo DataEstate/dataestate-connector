@@ -1,19 +1,117 @@
 1 .[dec-name]
+@param          name (string)
+@return         String
+Show the title of the specific item
+
 
 2. [dec-description]
+@param          description (string)
+@return         String
+Show the description of the specific item
+
 
 3. [dec-address type=PHYSICAL get=post_code,state]
+@param          type, get
+@return         String
+type - Set address type, include PHYSICAL, POSTAL
+get - Get specific Address attribute information, includes state_code, post_code, geocode, loc, locality, regions, country, street_address, street_address, state
+
 
 4. [dec-attributes type=ACCREDITN get=description,id,type]
+@param          type, index, get, as
+@return         String
+type - ACCREDITN: Accreditation , MEMBERSHIP: Membership , ENTITY FAC: Entity Facility, INTERNET: Internet Access Point , DISASSIST: Access With Assistance for the Disabled, ACTIVITY: Activities , TAG: Tags    
+index - 'get' is the compulsory field for this field. 
+get - 
+as - Text / Class: Text - display a list of results in text; Class - Automatically set attr ID as class name
+
 
 5. [dec-phone index=2 get=number,country_name,country_code,calling_code]
+@param          index (number), get
+@return         String
+index - get the selected phone details from the array
+get - get the specific phone attributes, which includes formatted_number, area_code, country_code, number, format, country_name
+
 
 6. [dec-email index=0 get=address]
+@param          index (number), get
+@return         String
+index - get the selected email details from the array
+get - get the specific email attributes
+
 
 7. [dec-url index=0 get=address]
+@param          index (number), get
+@return         String
+index - get the selected URL details from the array
+get - get the specific URL attributes, which includes address
+
 
 8. [dec-images index=3]
+@param          index (number), get
+@return         URL
+index - Set the amount of images to be displayed
+get - Get the specific image attribute, includes dimension, size, orientation, path, caption, alt
+
 
 9. [dec-classifications type=BEDBREAKFA get=description,type]
 
 10.[dec-category]
+@param          category
+@return         String
+Show the category of the specific item
+
+
+11.[dec-rate]
+@param          from (number), to (number)
+@return         String
+from - The min amount for rate filtering
+to -  The max amount for rate filtering
+
+
+12.[dec-subtypes]
+@param          index, get
+@return         String
+index - 
+get -
+
+
+13.[dec-rooms]
+@param          
+@return         
+Maybe only used when category is Accomm, Show Nothing if there is empty rooms information
+
+
+14.[dec-gallery]
+@param          lightbox (boolean)
+@return         URL
+lightbox - activate lightbox function
+
+
+15.[dec-location]
+@param          width (number), height (number), zoom (number), scrollwheel (boolean)
+@return         Google Map
+width - set the width of the google map
+height - set the height of the google map
+zoom - set zoom level in the google map
+scrollwheel - activate to mouse scroll wheel to move the google map
+
+
+16.[dec-star-rating]
+@param          as_icon (boolean), default_text (string)
+@return         Icons, String
+as_icon - Display star icons instead of numbers
+default_text - Set the default text if there is not rating
+
+
+17.[dec-txa-button]
+@param          enquire
+@return         
+enquire - Execute enquiry or book function
+
+
+18.[dec-event-date]
+@param          format (Date), asEndDate (boolean)
+@return         date
+format - set the date format
+asEndDate - Whether to show the latest end date

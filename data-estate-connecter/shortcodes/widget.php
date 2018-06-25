@@ -295,38 +295,116 @@ function dec_assets($atts, $content=null) {
 	$resultString.='</div>';
 	return $resultString;
 }
+
+
 //Enclosing shortcode
 function dec_estates($atts, $content=null) {
 	extract(shortcode_atts(['fields'=>'', 'size'=>20,'sort'=>'name','category_code'=>'',
-	'template_keys'=>'name', 'award_description'=>'', 'states'=>'', 'areas'=>'', 'regions'=>'',
+	'template_keys'=>'$name', 'award_description'=>'', 'states'=>'', 'areas'=>'', 'regions'=>'',
 	 'categories'=>'', 'localities'=>'', 'atap'=>'', 'subtypes'=>'', 'att_types'=>'', 
-	'attributes'=>'', 'sort'=>''], $atts));
+	'attributes'=>'', 'sort'=>'', 'pg'=>'1', 'url_params'=>True, 'desc_wordslength' => '', 'shortcode_content'=>'true'], $atts));
+
+
+	// get params from url
+	parse_str($_SERVER['QUERY_STRING'], $output);
 	$deApi = De_api::get_instance();
 	$queryParams=[];
 	foreach ($atts as $aKey => $aVal) {
 		if ($aVal !='' && $aKey !='template_keys') {
-			$queryParams[$aKey]=$aVal;
+			// if url params has same atts, then use url params value
+			if (array_key_exists($aKey, $output)) {
+				$queryParams[$aKey]=$output[$aKey];
+				unset($output[$aKey]);
+			}else {
+				$queryParams[$aKey]=$aVal;
+			}
 		}
 	}
+	$queryParams = array_merge($queryParams,$output);	//to be reviewed
+	//print_r($queryParams);
+
 	$deEstates = $deApi->estates($queryParams);
 	$templateKeys=explode(",", $template_keys);
+
 	$resultString.='<div class="de-estates">';
 	//Build content template
 	foreach ($deEstates as $asset) {
+
 		$varArray=[];
 		foreach ($templateKeys as $key) {
+			$key_arr=explode(".", $key);
 			$key = str_replace("$", "", $key);
+			
 			if (isset($asset->$key)) {
-				$varArray[]=$asset->$key;
-			}
-			else {
-				$varArray[]="";
+				//limit the description length
+				if ($desc_wordslength > 0 && $key == 'description') {
+					$varArray[]= mb_strimwidth(strip_tags($asset->$key), 0, $desc_wordslength, "...");
+				} else {
+					$varArray[]=strip_tags($asset->$key);
+				}
+			}else {
+				//Allow user to call nested shortcode field, e.g. addresses.PHYSICAL.state
+				//Remove '$' sign on the first element of array 
+				$key_arr[0] = str_replace("$", "", $key_arr[0]);
+				if (count($key_arr) > 1) {
+					// if api result has this result, then get the result with the given shortcode fields, else leave it blank
+					if(property_exists($asset, $key_arr[0])) {
+						$i = 0;
+						$current = $asset;
+// 						check whether the array exists, if not return empty
+						foreach ($key_arr as $item) {
+							if(property_exists($current, $item)) {
+								$current = $current->$item;
+							} else {
+								$current = "";
+								break;
+							}
+						}
+						
+						if ($key_arr[0] == "rate") {
+							$current = "$ ".number_format($current, 2);
+						} else {
+							$current=strip_tags($current);
+						}
+						$varArray[]=$current;
+						
+					} else {
+						$varArray[]="";
+					}
+				} else {
+					$varArray[]="";
+				}
 			}
 		}
+
+		//print_r($templateKeys);
+		//print_r($varArray);
+		// echo htmlspecialchars($content);
 		$resultString .= str_replace($templateKeys, $varArray, $content);
 	}
 	$resultString.='</div>';
-	return $resultString;
+
+
+	//if nested shortcodes
+	if ($shortcode_content=='false' || $shortcode_content=='') {
+		return $resultString;
+	}else {
+		//echo htmlspecialchars($resultString);
+		return do_shortcode($resultString);
+	}
+}
+
+
+//if output is empty
+function dec_ifnot_empty($atts, $content=null) {
+	extract(shortcode_atts([
+		'field'=>''
+	], $atts));
+	if (strlen($field) > 0) {
+		return $content;
+	} else {
+		return '';
+	}
 }
 
 function dec_awarded_estates($atts, $content=null) {

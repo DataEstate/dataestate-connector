@@ -1,7 +1,7 @@
 <?php require_once 'admin_functions.php';?>
 <div class="wrap">
 	<div class="headline_api_detail">
-	<?php echo "<h2>" . __('Data Estate Connecter Settings') . "</h2>"; ?> 
+	<?php echo "<h2>" . __('Data Estate Connecter Settings') . "</h2>"; ?>
 	</div>
 	<p>Please show the default values when nothing’s entered. Leave blank if “default” is blank in the table below. </p>
 	<table class="table table-bordered">
@@ -59,7 +59,7 @@
 		</tbody>
 	</table>
 	<div class="headline_api_detail">
-		<?php echo "<h2>" . __('Configration For Data Estate Connecter') . "</h2>"; ?> 
+		<?php echo "<h2>" . __('Configration For Data Estate Connecter') . "</h2>"; ?>
 	</div>
 	<div class="api_detail_form">
 		<?php if($msz){
@@ -93,6 +93,19 @@
 						<input type="text" placeholder="Enter Your Google Map Api Key" name="gmap_key" id="gmap_key"  class="form-control" autocomplete="off" value="<?php echo $gmap_key_1;?>">
 					</div>
 				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<label for="api_key">Main Estate ID</label>
+					<div class="form-group">
+						<input type="text" placeholder="Enter Your Estate ID" name="estate_id" id="estate_id"  class="form-control" required autocomplete="off" value="<?php echo $estate_id_1;?>">
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
 				<div class="col-xs-12">
 					<div class="form-group">
 						<input type="submit" name="api_detail_submit" class="api_detail_btn" value="Save all changes"/>
@@ -109,6 +122,6 @@
 				</div>
 
 			</div> -->
-		</form> 
+		</form>
 	</div>
 </div>

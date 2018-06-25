@@ -14,18 +14,20 @@ if(isset($_POST['api_detail_submit'])){
 		$api_base_url = $_POST['api_base_url'];
 		$api_end_point = $_POST['api_end_point'];
 		$api_key = $_POST['api_key'];
+		$estate_id = $_POST['estate_id'];
 
 		// /** Category alias **/
 		// $cat_accomm = $_POST['cat_map_accomm'];
 		// /** end category alias **/
 
 		/** Add DE API INFO **/
-		$data = array( 
-			'api_base_url' => $api_base_url, 
-			'api_end_point' => $api_end_point, 
-			'api_key' => $api_key
+		$data = array(
+			'api_base_url' => $api_base_url,
+			'api_end_point' => $api_end_point,
+			'api_key' => $api_key,
+			'main_estate_id' => $estate_id
 		);
-		$where = array('id'=>1);
+		$where = array('type'=>'de');
 
 		$status = $wpdb->update( $table_name, $data, $where, $format = null, $where_format = null );
 		/** Add GMAP API INFO **/
@@ -35,7 +37,7 @@ if(isset($_POST['api_detail_submit'])){
 			$data = [
 				"api_key"=>$gmap_key
 			];
-			$where = array('id'=>2);
+			$where = array('type'=>'google');
 			$g_stat = $wpdb->update($table_name, $data, $where, $format = null, $where_format=null);
 			// TODO: check GMAP stats?
 		}
@@ -45,17 +47,18 @@ if(isset($_POST['api_detail_submit'])){
 		}
 		else{
 			$msz='<div class="success_msz"><p>Api details are not save successfully.</p></div>';
-		} 
+		}
 	}
 }
 $myrows = $wpdb->get_results( "SELECT * FROM `".DEC_TABLE_DETAILS."`" );
-$api_base_url_1 = $myrows[0]->api_base_url;
-$api_end_point_1= $myrows[0]->api_end_point;
-$api_key_1= $myrows[0]->api_key;
-//TODO: Refactor this to be more flexible. 
-if (isset($myrows[1])) {
-	$gmap_key_1 = $myrows[1]->api_key;
-}
-else {
-	$gmap_key_1 = null;
+foreach($myrows as $row){
+	if ($row->type=="de") {
+		$api_base_url_1 = $row->api_base_url;
+		$api_end_point_1= $row->api_end_point;
+		$api_key_1= $row->api_key;
+		$estate_id_1= $row->main_estate_id;
+		$gmap_key_1 = null;
+	} elseif($row->type=="google") {
+		$gmap_key_1 = $row->api_key;
+	}
 }

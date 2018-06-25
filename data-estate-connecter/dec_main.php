@@ -5,7 +5,7 @@ Plugin Name: Data Estate Connecter
 Description: The Data Estate Connecter (DEC) plugin integrates your WordPress site with the Data Estate API gain access to various Estate content. The API supports accessing ATDW’s tourism data as long as you have a valid ATDW distributor API Key.
 Author: Data Estate
 Author URI: http://www.dataestate.com.au
-Version: 1.5.8
+Version: 1.6
 License:           GPL-2.0+
 License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -35,17 +35,19 @@ function dec_install() {
 		$sql0 .= "  `api_base_url` text NOT NULL, ";
 		$sql0 .= "  `api_end_point` text NOT NULL, ";
 		$sql0 .= "  `api_key` text NOT NULL, ";
+		$sql0 .= "  `type` text NOT NULL, ";
+		$sql0 .= "  `main_estate_id` text NOT NULL, ";
 		$sql0 .= "  PRIMARY KEY `id` (`id`) ";
 		$sql0 .= ") ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; ";
 		#We need to include this file so we have access to the dbDelta function below (which is used to create the table)
 		require_once(ABSPATH . '/wp-admin/upgrade-functions.php');
 		dbDelta($sql0);
-		$sql = "INSERT INTO `".DEC_TABLE_DETAILS."`(`api_base_url`,`api_end_point`,`api_key`) 
-				VALUES ('http://api-uat.dataestate.net/v2','estates/data/','')";
+		$sql = "INSERT INTO `".DEC_TABLE_DETAILS."`(`api_base_url`,`api_end_point`,`api_key`,`main_estate_id`,`type`) 
+				VALUES ('http://api-uat.dataestate.net/v2','estates/data/','','','de')";
 		$da_value=$wpdb->query($wpdb->prepare($sql, array($api_end_point,$api_key)));
 		//TODO... Refactor this
-		$sql = "INSERT INTO `".DEC_TABLE_DETAILS."`(`api_base_url`,`api_end_point`,`api_key`) 
-				VALUES ('maps.googleapis.com','maps/api/js','')";
+		$sql = "INSERT INTO `".DEC_TABLE_DETAILS."`(`api_base_url`,`api_end_point`,`api_key`,`main_estate_id`,`type`) 
+				VALUES ('maps.googleapis.com','maps/api/js','','','google')";
 		$da_value=$wpdb->query($wpdb->prepare($sql, [$gmap_api_endpoint, $gmap_key]));
 	}
 }
@@ -130,6 +132,7 @@ add_shortcode('dec-event-date', 'dec_event_date');
 add_shortcode('dec-txa-button', 'dec_txa_button');
 add_shortcode('dec-rate', 'dec_rate');
 add_shortcode('dec-rooms', 'dec_rooms');
+add_shortcode('dec-awards', 'dec_awards');
 add_shortcode('atdw-beacon', 'atdw_beacon');
 /** Widget related shortcodes **/
 add_shortcode('dec-widget', 'dec_widget');
@@ -138,6 +141,7 @@ add_shortcode('dec-assets', 'dec_assets');
 add_shortcode('dec-estates', 'dec_estates');
 add_shortcode('dec-awarded-estates', 'dec_awarded_estates');
 add_shortcode('dec-condition', 'dec_condition');
+add_shortcode('dec-ifnot-empty', 'dec_ifnot_empty');
 // add_shortcode('dec-search-categories', 'dec_search_cats');
 require_once 'de_api.php';
 require_once 'functions.php';
